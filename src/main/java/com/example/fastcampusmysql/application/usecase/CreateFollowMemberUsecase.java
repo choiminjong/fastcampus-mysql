@@ -1,4 +1,4 @@
-package com.example.fastcampusmysql.application.usacase;
+package com.example.fastcampusmysql.application.usecase;
 
 import com.example.fastcampusmysql.domain.follow.service.FollowWriteService;
 import com.example.fastcampusmysql.domain.member.dto.MemberDto;

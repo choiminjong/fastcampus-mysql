@@ -1,4 +1,4 @@
-package com.example.fastcampusmysql.application.usacase;
+package com.example.fastcampusmysql.application.usecase;
 
 import com.example.fastcampusmysql.domain.follow.entity.Follow;
 import com.example.fastcampusmysql.domain.follow.service.FollowReadService;
