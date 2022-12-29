@@ -28,8 +28,8 @@ public class PostReadService {
         return  postRepository.groupByCreatedDate(request);
     }
 
-    public Page<Post> getPosts(Long memberId, PageRequest pageRequest) {
-        return postRepository.findAllByMemberId(memberId,pageRequest);
+    public Page<Post> getPosts(Long memberId, Pageable pageable) {
+        return postRepository.findAllByMemberId(memberId,pageable);
     }
 
 }

@@ -3,6 +3,7 @@ package com.example.fastcampusmysql.domain.post.repository;
 import com.example.fastcampusmysql.domain.post.dto.DailyPostCount;
 import com.example.fastcampusmysql.domain.post.dto.DailyPostCountRequest;
 import com.example.fastcampusmysql.domain.post.entity.Post;
+import com.example.fastcampusmysql.util.PageHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -63,9 +64,11 @@ public class PostRepository {
                                     SELECT *
                                     FROM %s
                                     WHERE memberId = :memberId
+                                    ORDER BY %s
                                     LIMIT :size
                                     OFFSET :offset
-                                    """, TABLE);
+                                    """, TABLE, PageHelper.orderBy(pageable.getSort()));
+
         List<Post> posts = namedParameterJdbcTemplate.query(query, params, ROW_MAPPER);
         return new PageImpl(posts,pageable,getCount(membeId));
 
