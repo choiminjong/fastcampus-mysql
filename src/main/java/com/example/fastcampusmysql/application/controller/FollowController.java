@@ -10,6 +10,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
+
 @RequestMapping("/follow")
 public class FollowController {
 
