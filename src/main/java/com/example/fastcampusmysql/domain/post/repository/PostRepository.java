@@ -103,9 +103,9 @@ public class PostRepository {
 
     public List<Post> findAllByLessThanIdAndMemberIdAndOrderByIdDesc(Long id, Long memberId, int size) {
         var params = new MapSqlParameterSource()
-                                        .addValue("id", id)
-                                        .addValue("memberId", memberId)
-                                        .addValue("size", size);
+                .addValue("id", id)
+                .addValue("memberId", memberId)
+                .addValue("size", size);
 
         String query = String.format("""
                 SELECT *
@@ -117,6 +117,57 @@ public class PostRepository {
 
         return namedParameterJdbcTemplate.query(query, params, ROW_MAPPER);
     }
+
+    /*
+        게시글  다중 조회
+    */
+    public List<Post> findAllByMemberIdInAndOrderByIdDesc(List<Long> memberIds, int size) {
+        if (memberIds.isEmpty()) {
+            return List.of();
+        }
+
+        var params = new MapSqlParameterSource()
+                .addValue("memberIds", memberIds)
+                .addValue("size", size);
+
+        String query = String.format("""
+                SELECT *
+                FROM %s
+                WHERE memberId in (:memberIds)
+                ORDER BY id DESC
+                LIMIT :size
+                """, TABLE);
+
+        return namedParameterJdbcTemplate.query(query, params, ROW_MAPPER);
+
+    }
+
+    /*
+        게시글  다중 조회
+    */
+    public List<Post> findAllByLessThanIdAndMemberIdInAndOrderByIdDesc(Long id, List<Long> memberIds, int size) {
+        if (memberIds.isEmpty()) {
+            return List.of();
+        }
+
+        var params = new MapSqlParameterSource()
+                .addValue("id", id)
+                .addValue("memberIds", memberIds)
+                .addValue("size", size);
+
+        String query = String.format("""
+                SELECT *
+                FROM %s
+                WHERE memberId in (:memberIds) and id < :id
+                ORDER BY id DESC
+                LIMIT :size
+                """, TABLE);
+
+        return namedParameterJdbcTemplate.query(query, params, ROW_MAPPER);
+
+    }
+
+
 
 
     public Post save(Post post) {

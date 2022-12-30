@@ -34,20 +34,49 @@ public class PostReadService {
         return postRepository.findAllByMemberId(memberId,pageable);
     }
 
+    private long getNextKey(List<Post> posts) {
+        return posts.stream()
+                .mapToLong(Post::getId)
+                .min()
+                .orElse(CursorRequest.NONE_KEY);
+    }
+
     public PageCursor<Post> getPosts(Long memberId, CursorRequest cursorRequest) {
         List<Post> posts = findAllBy(memberId, cursorRequest);
-        long nextKey = posts.stream()
-                       .mapToLong(Post::getId)
-                       .min()
-                       .orElse(CursorRequest.NONE_KEY);
-
+        long nextKey = getNextKey(posts);
         return new PageCursor<>(cursorRequest.next(nextKey),posts);
     }
 
     private List<Post> findAllBy(Long memberId, CursorRequest cursorRequest) {
-        if(cursorRequest.hasKey()){
-            return postRepository.findAllByLessThanIdAndMemberIdAndOrderByIdDesc(cursorRequest.key(), memberId, cursorRequest.size());
+        if (cursorRequest.hasKey()) {
+            return postRepository.findAllByLessThanIdAndMemberIdAndOrderByIdDesc(
+                    cursorRequest.key(),
+                    memberId,
+                    cursorRequest.size()
+            );
         }
+
         return postRepository.findAllByMemberIdAndOrderByIdDesc(memberId, cursorRequest.size());
+    }
+
+    /*
+    여러 게시글 조회
+    */
+    public PageCursor<Post> getPosts(List<Long> memberIds, CursorRequest cursorRequest) {
+        List<Post> posts = findAllBy(memberIds, cursorRequest);
+        long nextKey = getNextKey(posts);
+        return new PageCursor<>(cursorRequest.next(nextKey),posts);
+    }
+
+    private List<Post> findAllBy(List<Long> memberIds, CursorRequest cursorRequest) {
+        if (cursorRequest.hasKey()) {
+            return postRepository.findAllByLessThanIdAndMemberIdInAndOrderByIdDesc(
+                    cursorRequest.key(),
+                    memberIds,
+                    cursorRequest.size()
+            );
+        }
+
+        return postRepository.findAllByMemberIdInAndOrderByIdDesc(memberIds, cursorRequest.size());
     }
 }
