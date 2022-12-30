@@ -33,7 +33,7 @@ create unique index Follow_fromMemberId_toMemberId_uindex
     on Follow (fromMemberId, toMemberId);
 
 
-create table POST
+create table Post
 (
     id int auto_increment,
     memberId int not null,
@@ -45,10 +45,29 @@ create table POST
 );
 
 create index POST__index_member_id
-    on POST (memberId);
+    on Post (memberId);
 
 create index POST__index_created_date
-    on POST (createdDate);
+    on Post (createdDate);
 
 
+create table Timeline
+(
+    id int auto_increment,
+    memberId int not null,
+    postId int not null,
+    createdAt datetime not null,
+    constraint Timeline_id_uindex
+        primary key (id)
+);
 
+
+create table PostLike
+(
+    id int auto_increment,
+    memberId int not null,
+    postId int not null,
+    createdAt datetime not null,
+    constraint PostLike_id_uindex
+        primary key (id)
+);
