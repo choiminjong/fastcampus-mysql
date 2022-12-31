@@ -34,6 +34,11 @@ public class PostReadService {
         return postRepository.findAllByMemberId(memberId,pageable);
     }
 
+    public List<Post> getPosts(List<Long> ids) {
+        return postRepository.findAllByIdIn(ids);
+    }
+
+
     private long getNextKey(List<Post> posts) {
         return posts.stream()
                 .mapToLong(Post::getId)
